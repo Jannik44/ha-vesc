@@ -4,7 +4,7 @@
 
 **Battery and temperature readings from your VESC motor controller – right in Home Assistant.**
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.1-blue)
 ![Architectures](https://img.shields.io/badge/arch-aarch64%20%7C%20amd64%20%7C%20armv7-informational)
 ![Go](https://img.shields.io/badge/Go-1.23-00ADD8?logo=go&logoColor=white)
 ![MQTT Discovery](https://img.shields.io/badge/MQTT-Discovery-660066?logo=mqtt&logoColor=white)

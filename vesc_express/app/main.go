@@ -107,9 +107,14 @@ func main() {
 		return
 	}
 
-	pub, err := newPublisher(o)
-	if err != nil {
-		log.Fatalf("Kein Weg zu Home Assistant: %v", err)
+	var pub Publisher
+	for {
+		var err error
+		if pub, err = newPublisher(o); err == nil {
+			break
+		}
+		log.Printf("Kein Weg zu Home Assistant: %v – neuer Versuch in 30s", err)
+		time.Sleep(30 * time.Second)
 	}
 	log.Printf("Veröffentliche über %s", pub.Name())
 

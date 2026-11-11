@@ -1,5 +1,5 @@
 name: VESC Express
-version: "1.0.0"
+version: "1.0.1"
 slug: vesc_express
 description: Liest Akkuspannung, Ladestand, ESC- und Motortemperatur über den VESC Express aus
 url: https://github.com/Jannik44/ha-vesc

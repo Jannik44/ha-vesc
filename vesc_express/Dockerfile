@@ -10,4 +10,6 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /vesc-express .
 
 FROM $BUILD_FROM
 COPY --from=build /vesc-express /usr/bin/vesc-express
-CMD ["/usr/bin/vesc-express"]
+# s6-overlay umgehen: /init leert sonst die Umgebung (SUPERVISOR_TOKEN fehlt)
+ENTRYPOINT ["/usr/bin/vesc-express"]
+CMD []
