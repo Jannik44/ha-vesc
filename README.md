@@ -63,7 +63,7 @@ scan_interval: 60     # Abfrageintervall in Sekunden
 ```
 ┌──────────────┐  TCP :65102   ┌──────────────┐   CAN   ┌────────────────┐
 │  HA Add-on   │ ────────────► │ VESC Express │ ──────► │ Motorcontroller│
-│ (vesc_express│ ◄──────────── │              │ ◄────── │     (VESC)     │
+│ vesc_express │ ◄──────────── │              │ ◄────── │     (VESC)     │
 └──────┬───────┘ GET_VALUES    └──────────────┘         └────────────────┘
        │ MQTT-Discovery / REST-API
        ▼
