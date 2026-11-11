@@ -1,0 +1,25 @@
+configuration:
+  host:
+    name: VESC Express host
+    description: IP address or hostname of the VESC Express
+  port:
+    name: TCP port
+    description: TCP port of the VESC Express (default 65102)
+  can_id:
+    name: CAN ID
+    description: CAN ID of the motor controller, -1 = auto-detect via CAN ping
+  cell_count:
+    name: Cell count (S)
+    description: Number of battery cells in series, used for the state of charge
+  scan_interval:
+    name: Scan interval (s)
+    description: How often the VESC is polled
+  mqtt_host:
+    name: MQTT host (optional)
+    description: Leave empty to use Home Assistant's MQTT service (Mosquitto) automatically
+  mqtt_port:
+    name: MQTT port (optional)
+  mqtt_user:
+    name: MQTT user (optional)
+  mqtt_password:
+    name: MQTT password (optional)

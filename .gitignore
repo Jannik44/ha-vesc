@@ -1,0 +1,3 @@
+.claude/
+*.test
+/vesc_express/app/vesc-express-addon
