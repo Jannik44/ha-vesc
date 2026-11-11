@@ -1,97 +1,97 @@
 <div align="center">
 
-# ⚡ VESC Express für Home Assistant
+# ⚡ VESC Express for Home Assistant
 
-**Akku- und Temperaturwerte deines VESC-Motorcontrollers – direkt in Home Assistant.**
+**Battery and temperature readings from your VESC motor controller – right in Home Assistant.**
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Architekturen](https://img.shields.io/badge/arch-aarch64%20%7C%20amd64%20%7C%20armv7-informational)
+![Architectures](https://img.shields.io/badge/arch-aarch64%20%7C%20amd64%20%7C%20armv7-informational)
 ![Go](https://img.shields.io/badge/Go-1.23-00ADD8?logo=go&logoColor=white)
 ![MQTT Discovery](https://img.shields.io/badge/MQTT-Discovery-660066?logo=mqtt&logoColor=white)
 
-[![Repository zu Home Assistant hinzufügen](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FJannik44%2Fha-vesc)
+[![Add repository to Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FJannik44%2Fha-vesc)
 
 </div>
 
 ---
 
-## 📊 Sensoren
+## 📊 Sensors
 
-| | Sensor | Entität | Einheit |
+| | Sensor | Entity | Unit |
 |:-:|---|---|:-:|
-| 🔋 | Akkuspannung | `sensor.vesc_voltage` | V |
-| 📈 | Ladestand | `sensor.vesc_soc` | % |
-| 🌡️ | ESC Temperatur | `sensor.vesc_temp_esc` | °C |
-| ⚙️ | Motor Temperatur | `sensor.vesc_temp_motor` | °C |
+| 🔋 | Battery voltage | `sensor.vesc_voltage` | V |
+| 📈 | State of charge | `sensor.vesc_soc` | % |
+| 🌡️ | ESC temperature | `sensor.vesc_temp_esc` | °C |
+| ⚙️ | Motor temperature | `sensor.vesc_temp_motor` | °C |
 
 ## ✨ Features
 
-- **Kein Extra-Server** – ersetzt eine separate Bridge, läuft direkt als Add-on
-- **Automatische CAN-Erkennung** – findet den Motorcontroller hinter dem VESC Express per `COMM_PING_CAN`
-- **MQTT-Discovery** – Sensoren erscheinen als Gerät **VESC**, umbenennbar und mit Langzeitstatistik
-- **Fallback ohne MQTT** – schreibt die Werte über die Home-Assistant-REST-API
-- **Klein & schnell** – ein einzelnes statisches Go-Binary, keine Laufzeitabhängigkeiten
+- **No extra server** – replaces a standalone bridge and runs directly as an add-on
+- **Automatic CAN detection** – finds the motor controller behind the VESC Express via `COMM_PING_CAN`
+- **MQTT discovery** – sensors show up as a **VESC** device, renamable and with long-term statistics
+- **Fallback without MQTT** – writes the values through the Home Assistant REST API
+- **Small & fast** – a single static Go binary, no runtime dependencies
 
 ## 🚀 Installation
 
-1. Auf den Button oben klicken **oder** manuell:
-   *Einstellungen → Add-ons → Add-on Store → ⋮ → Repositories* →
-   `https://github.com/Jannik44/ha-vesc` eintragen
-2. **VESC Express** im Store auswählen und installieren
-   *(das Add-on wird beim ersten Mal auf deinem HA-Gerät gebaut – das dauert ein paar Minuten)*
-3. Optionen prüfen und **Starten**
+1. Click the button above **or** add it manually:
+   *Settings → Add-ons → Add-on Store → ⋮ → Repositories* →
+   enter `https://github.com/Jannik44/ha-vesc`
+2. Select **VESC Express** in the store and install it
+   *(the add-on is built on your HA device the first time – this takes a few minutes)*
+3. Check the options and hit **Start**
 
-> 💡 Für die beste Integration das **Mosquitto-Broker**-Add-on und die **MQTT**-Integration einrichten – das Add-on nutzt sie automatisch.
+> 💡 For the best integration, set up the **Mosquitto broker** add-on and the **MQTT** integration – the add-on uses them automatically.
 
-## ⚙️ Konfiguration
+## ⚙️ Configuration
 
 ```yaml
-host: 192.168.0.119   # IP oder Hostname des VESC Express
-port: 65102           # TCP-Port des VESC Express
-can_id: -1            # -1 = automatisch erkennen
-cell_count: 20        # Zellen in Reihe (S) für die Ladestand-Berechnung
-scan_interval: 60     # Abfrageintervall in Sekunden
-# optional, nur für einen externen MQTT-Broker:
+host: 192.168.0.119   # IP or hostname of the VESC Express
+port: 65102           # TCP port of the VESC Express
+can_id: -1            # -1 = auto-detect
+cell_count: 20        # cells in series (S), used for the state of charge
+scan_interval: 60     # polling interval in seconds
+# optional, only for an external MQTT broker:
 # mqtt_host: 192.168.0.10
 # mqtt_port: 1883
 # mqtt_user: user
-# mqtt_password: geheim
+# mqtt_password: secret
 ```
 
-## 🔧 So funktioniert's
+## 🔧 How it works
 
 ```
 ┌──────────────┐  TCP :65102   ┌──────────────┐   CAN   ┌────────────────┐
-│  HA Add-on   │ ────────────► │ VESC Express │ ──────► │ Motorcontroller│
+│  HA add-on   │ ────────────► │ VESC Express │ ──────► │motor controller│
 │ vesc_express │ ◄──────────── │              │ ◄────── │     (VESC)     │
 └──────┬───────┘ GET_VALUES    └──────────────┘         └────────────────┘
-       │ MQTT-Discovery / REST-API
+       │ MQTT discovery / REST API
        ▼
 ┌──────────────┐
 │Home Assistant│
 └──────────────┘
 ```
 
-Der **Ladestand** wird aus der Akkuspannung über eine typische Li-Ion-Entladekurve berechnet
-(4,20 V/Zelle = 100 %, 3,70 V = 50 %, 2,90 V = 0 %, linear interpoliert).
+The **state of charge** is derived from the battery voltage using a typical Li-ion discharge curve
+(4.20 V/cell = 100 %, 3.70 V = 50 %, 2.90 V = 0 %, linearly interpolated).
 
-Ist der VESC nicht erreichbar (z. B. Fahrzeug ausgeschaltet), bleiben die letzten Werte erhalten – der Fehler steht im Add-on-Log.
+If the VESC can't be reached (e.g. the vehicle is switched off), the last values are kept – the error shows up in the add-on log.
 
-## 🩺 Fehlersuche
+## 🩺 Troubleshooting
 
-| Log-Meldung | Ursache |
+| Log message | Cause |
 |---|---|
-| `connect: connection refused` / `i/o timeout` | VESC Express nicht erreichbar – IP/Port prüfen |
-| `COMM_PING_CAN Timeout` | Express erreichbar, aber kein Controller am CAN-Bus (ausgeschaltet?) |
-| `keine GET_VALUES Antwort` | Falsche `can_id` – auf `-1` setzen |
-| `Kein MQTT verfügbar … REST-API` | Kein Mosquitto gefunden, Fallback aktiv |
+| `connect: connection refused` / `i/o timeout` | VESC Express not reachable – check IP/port |
+| `COMM_PING_CAN Timeout` | Express reachable, but no controller on the CAN bus (switched off?) |
+| `keine GET_VALUES Antwort` | Wrong `can_id` – set it to `-1` |
+| `Kein MQTT verfügbar … REST-API` | No Mosquitto found, REST fallback active |
 
-## 🛠️ Entwicklung
+## 🛠️ Development
 
-Lokal einmal auslesen (ohne Home Assistant):
+Read the values once locally (without Home Assistant):
 
 ```bash
 cd vesc_express/app && go run . -once -options /dev/null
 ```
 
-Weitere Details: [vesc_express/DOCS.md](vesc_express/DOCS.md)
+More details: [vesc_express/DOCS.md](vesc_express/DOCS.md)
